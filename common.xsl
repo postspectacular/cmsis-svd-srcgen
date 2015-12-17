@@ -43,19 +43,19 @@
 
   <xsl:function name="thi:line-comment">
     <xsl:param name="body" as="xs:string"/>
-    <xsl:value-of select="concat(' ',$lcommentPrefix,fn:normalize-space($body),$lcommentSuffix,'&#xA;')" />
+    <xsl:value-of select="concat(' ',$lcommentPrefix,fn:normalize-space($body),$lcommentSuffix,'&#xA;')"/>
   </xsl:function>
 
   <xsl:function name="thi:block-comment">
     <xsl:param name="body" as="xs:string"/>
-    <xsl:value-of select="concat($bcommentPrefix,fn:normalize-space($body),'&#xA;',$bcommentSuffix,'&#xA;')" />
+    <xsl:value-of select="concat($bcommentPrefix,fn:normalize-space($body),'&#xA;',$bcommentSuffix,'&#xA;')"/>
   </xsl:function>
 
   <xsl:template match="/device">
     <xsl:value-of select="thi:block-comment(concat(name, ' SVD peripherals &amp; registers'))"/>
     <xsl:text>&#xA;</xsl:text>
     <xsl:for-each select="peripherals/peripheral">
-      <xsl:variable name="derived" select="@derivedFrom" />
+      <xsl:variable name="derived" select="@derivedFrom"/>
       <xsl:choose>
         <xsl:when test="$derived">
           <xsl:call-template name="peripheral-derived">
@@ -63,7 +63,7 @@
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:call-template name="peripheral" />
+          <xsl:call-template name="peripheral"/>
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>&#xA;</xsl:text>
@@ -71,13 +71,13 @@
   </xsl:template>
 
   <xsl:template name="peripheral">
-    <xsl:variable name="device" select="name" />
+    <xsl:variable name="device" select="name"/>
     <xsl:choose>
       <xsl:when test="description">
         <xsl:value-of select="thi:block-comment(description)"/>
       </xsl:when>
     </xsl:choose>
-    <xsl:value-of select="concat($definePrefix,$device,' ',fn:lower-case(baseAddress),$defineSuffix,'&#xA;')" />
+    <xsl:value-of select="concat($definePrefix,$device,' ',fn:lower-case(baseAddress),$defineSuffix,'&#xA;')"/>
     <xsl:for-each select="registers/register">
       <xsl:call-template name="register">
         <xsl:with-param name="device" select="$device"/>
@@ -86,15 +86,15 @@
   </xsl:template>
 
   <xsl:template name="peripheral-derived">
-    <xsl:param name="src" />
-    <xsl:variable name="srcName" select="$src/name" />
-    <xsl:variable name="device" select="name" />
+    <xsl:param name="src"/>
+    <xsl:variable name="srcName" select="$src/name"/>
+    <xsl:variable name="device" select="name"/>
     <xsl:choose>
       <xsl:when test="$src/description">
         <xsl:value-of select="thi:block-comment(concat($src/description, ' (derived from ', $srcName, ')'))"/>
       </xsl:when>
     </xsl:choose>
-    <xsl:value-of select="concat($definePrefix,$device,' ',fn:lower-case(baseAddress),$defineSuffix,'&#xA;')" />
+    <xsl:value-of select="concat($definePrefix,$device,' ',fn:lower-case(baseAddress),$defineSuffix,'&#xA;')"/>
     <xsl:for-each select="$src/registers/register">
       <xsl:call-template name="register">
         <xsl:with-param name="device" select="$device"/>
@@ -103,25 +103,27 @@
   </xsl:template>
 
   <xsl:template name="register" >
-    <xsl:param name="device" />
-    <xsl:variable name="reg" select="concat($device,'_',name)" />
-    <xsl:value-of select="concat($definePrefix,$reg,' ',$device,' + ',addressOffset,$defineSuffix)" />
-    <xsl:value-of select="thi:line-comment(description)" />
+    <xsl:param name="device"/>
+    <xsl:variable name="reg" select="concat($device,$sep,name)"/>
+    <xsl:value-of select="concat($definePrefix,$reg,' ',thi:lang-expr('+',$device,addressOffset),$defineSuffix)"/>
+    <xsl:value-of select="thi:line-comment(description)"/>
     <xsl:for-each select="fields/field">
-      <xsl:variable name="bw" as="xs:integer" select="bitWidth" />
-      <xsl:variable name="boff" as="xs:integer" select="bitOffset" />
-      <xsl:variable name="bmask" as="xs:string" select="$bitMasks[$bw]" />
+      <xsl:variable name="bw" as="xs:integer" select="bitWidth"/>
+      <xsl:variable name="boff" as="xs:integer" select="bitOffset"/>
+      <xsl:variable name="bmask" as="xs:string" select="$bitMasks[$bw]"/>
       <!-- field bit shift -->
-      <xsl:value-of select="concat($definePrefix,$reg,'_',name,'_SHIFT ',$boff,$defineSuffix,'&#xA;')" />
+      <xsl:value-of select="concat($definePrefix,$reg,$sep,name,$sep,'SHIFT ',$boff,$defineSuffix,'&#xA;')"/>
       <!-- field bit width -->
-      <xsl:value-of select="concat($definePrefix,$reg,'_',name,'_RMASK ',$bmask,$defineSuffix,'&#xA;')" />
+      <xsl:value-of select="concat($definePrefix,$reg,$sep,name,$sep,'RMASK ',$bmask,$defineSuffix,'&#xA;')"/>
       <!-- field shifted bitmask -->
-      <xsl:value-of select="concat($definePrefix,$reg,'_',name,'_MASK ',$bmask)" />
+      <xsl:value-of select="concat($definePrefix,$reg,$sep,name,$sep,'MASK ')"/>
       <xsl:choose>
         <xsl:when test="$boff > 0">
-          <xsl:text> &lt;&lt; </xsl:text>
-          <xsl:value-of select="$boff"/>
+          <xsl:value-of select="thi:lang-expr('&lt;&lt;',$bmask,$boff)"/>
         </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$bmask"/>
+        </xsl:otherwise>
       </xsl:choose>
       <xsl:value-of select="$defineSuffix"/>
       <xsl:text>&#xA;</xsl:text>

@@ -7,25 +7,25 @@
                 xmlns:xdt="http://www.w3.org/2005/xpath-datatypes"
                 xmlns:thi="http://thi.ng/">
   <xsl:output method="text"/>
-  <xsl:variable name="lcommentPrefix" select="'// '"/>
+  <xsl:variable name="lcommentPrefix" select="';; '"/>
   <xsl:variable name="lcommentSuffix" select="''"/>
   <xsl:variable
       name="bcommentPrefix"
-      select="'/****************************************************************&#xA; * '"/>
+      select="';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;&#xA;;;&#xA;;; '"/>
   <xsl:variable
       name="bcommentSuffix"
-      select="' ****************************************************************/'"/>
-  <xsl:variable name="definePrefix" select="'#define '"/>
-  <xsl:variable name="defineSuffix" select="''"/>
-  <xsl:variable name="sep" select="'_'"/>
+      select="';;&#xA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'"/>
+  <xsl:variable name="definePrefix" select="'(def '"/>
+  <xsl:variable name="defineSuffix" select="')'"/>
+  <xsl:variable name="sep" select="'-'"/>
 
   <xsl:function name="thi:lang-expr">
     <xsl:param name="op" as="xs:string"/>
     <xsl:param name="lhs"/>
     <xsl:param name="rhs"/>
-    <xsl:value-of select="concat($lhs,' ',$op,' ',$rhs)"/>
+    <xsl:value-of select="concat('(',$op,' ',$lhs,' ',$rhs,')')"/>
   </xsl:function>
-
+  
   <xsl:include href="common.xsl"/>
 
 </xsl:stylesheet>

@@ -4,19 +4,28 @@
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"
-                xmlns:xdt="http://www.w3.org/2005/xpath-datatypes">
+                xmlns:xdt="http://www.w3.org/2005/xpath-datatypes"
+                xmlns:thi="http://thi.ng/">
   <xsl:output method="text"/>
-  <xsl:variable name="lcommentPrefix" select="'@ '" />
-  <xsl:variable name="lcommentSuffix" select="''" />
+  <xsl:variable name="lcommentPrefix" select="'@ '"/>
+  <xsl:variable name="lcommentSuffix" select="''"/>
   <xsl:variable
       name="bcommentPrefix"
-      select="'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@&#xA;@&#xA;@ '" />
+      select="'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@&#xA;@&#xA;@ '"/>
   <xsl:variable
       name="bcommentSuffix"
-      select="'@&#xA;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'" />
+      select="'@&#xA;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'"/>
   <xsl:variable name="definePrefix" select="'.equ '"/>
   <xsl:variable name="defineSuffix" select="''"/>
+  <xsl:variable name="sep" select="'_'"/>
+
+  <xsl:function name="thi:lang-expr">
+    <xsl:param name="op" as="xs:string"/>
+    <xsl:param name="lhs"/>
+    <xsl:param name="rhs"/>
+    <xsl:value-of select="concat($lhs,' ',$op,' ',$rhs)"/>
+  </xsl:function>
   
-  <xsl:include href="common.xsl" />
-  
+  <xsl:include href="common.xsl"/>
+
 </xsl:stylesheet>
