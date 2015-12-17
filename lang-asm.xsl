@@ -14,10 +14,15 @@
       select="'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@&#xA;@&#xA;@ '"/>
   <xsl:variable
       name="bcommentSuffix"
-      select="'@&#xA;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'"/>
+      select="'@&#xA;'"/>
   <xsl:variable name="definePrefix" select="'.equ '"/>
   <xsl:variable name="defineSuffix" select="''"/>
   <xsl:variable name="sep" select="'_'"/>
+
+  <xsl:function name="thi:lang-symbolname">
+    <xsl:param name="body" as="xs:string"/>
+    <xsl:value-of select="$body"/>
+  </xsl:function>
 
   <xsl:function name="thi:lang-expr">
     <xsl:param name="op" as="xs:string"/>
@@ -25,7 +30,7 @@
     <xsl:param name="rhs"/>
     <xsl:value-of select="concat($lhs,' ',$op,' ',$rhs)"/>
   </xsl:function>
-  
+
   <xsl:include href="common.xsl"/>
 
 </xsl:stylesheet>

@@ -19,13 +19,18 @@
   <xsl:variable name="defineSuffix" select="')'"/>
   <xsl:variable name="sep" select="'-'"/>
 
+  <xsl:function name="thi:lang-symbolname">
+    <xsl:param name="body" as="xs:string"/>
+    <xsl:value-of select="replace(fn:lower-case($body),'_','-')"/>
+  </xsl:function>
+
   <xsl:function name="thi:lang-expr">
     <xsl:param name="op" as="xs:string"/>
     <xsl:param name="lhs"/>
     <xsl:param name="rhs"/>
     <xsl:value-of select="concat('(',$op,' ',$lhs,' ',$rhs,')')"/>
   </xsl:function>
-  
+
   <xsl:include href="common.xsl"/>
 
 </xsl:stylesheet>

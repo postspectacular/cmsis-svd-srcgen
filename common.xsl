@@ -71,7 +71,7 @@
   </xsl:template>
 
   <xsl:template name="peripheral">
-    <xsl:variable name="device" select="name"/>
+    <xsl:variable name="device" select="thi:lang-symbolname(name)"/>
     <xsl:choose>
       <xsl:when test="description">
         <xsl:value-of select="thi:block-comment(description)"/>
@@ -88,7 +88,7 @@
   <xsl:template name="peripheral-derived">
     <xsl:param name="src"/>
     <xsl:variable name="srcName" select="$src/name"/>
-    <xsl:variable name="device" select="name"/>
+    <xsl:variable name="device" select="thi:lang-symbolname(name)"/>
     <xsl:choose>
       <xsl:when test="$src/description">
         <xsl:value-of select="thi:block-comment(concat($src/description, ' (derived from ', $srcName, ')'))"/>
@@ -105,18 +105,19 @@
   <xsl:template name="register" >
     <xsl:param name="device"/>
     <xsl:variable name="reg" select="concat($device,$sep,name)"/>
-    <xsl:value-of select="concat($definePrefix,$reg,' ',thi:lang-expr('+',$device,addressOffset),$defineSuffix)"/>
+    <xsl:value-of select="concat($definePrefix,thi:lang-symbolname($reg),' ',thi:lang-expr('+',$device,addressOffset),$defineSuffix)"/>
     <xsl:value-of select="thi:line-comment(description)"/>
     <xsl:for-each select="fields/field">
       <xsl:variable name="bw" as="xs:integer" select="bitWidth"/>
       <xsl:variable name="boff" as="xs:integer" select="bitOffset"/>
       <xsl:variable name="bmask" as="xs:string" select="$bitMasks[$bw]"/>
+      <xsl:variable name="fname" as="xs:string" select="concat($reg,$sep,name,$sep)"/>
       <!-- field bit shift -->
-      <xsl:value-of select="concat($definePrefix,$reg,$sep,name,$sep,'SHIFT ',$boff,$defineSuffix,'&#xA;')"/>
+      <xsl:value-of select="concat($definePrefix,thi:lang-symbolname(concat($fname,'SHIFT ')),$boff,$defineSuffix,'&#xA;')"/>
       <!-- field bit width -->
-      <xsl:value-of select="concat($definePrefix,$reg,$sep,name,$sep,'RMASK ',$bmask,$defineSuffix,'&#xA;')"/>
+      <xsl:value-of select="concat($definePrefix,thi:lang-symbolname(concat($fname,'RMASK ')),$bmask,$defineSuffix,'&#xA;')"/>
       <!-- field shifted bitmask -->
-      <xsl:value-of select="concat($definePrefix,$reg,$sep,name,$sep,'MASK ')"/>
+      <xsl:value-of select="concat($definePrefix,thi:lang-symbolname(concat($fname,'MASK ')))"/>
       <xsl:choose>
         <xsl:when test="$boff > 0">
           <xsl:value-of select="thi:lang-expr('&lt;&lt;',$bmask,$boff)"/>
