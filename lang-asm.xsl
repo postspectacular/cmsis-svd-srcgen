@@ -19,6 +19,9 @@
   <xsl:variable name="defineSuffix" select="''"/>
   <xsl:variable name="sep" select="'_'"/>
 
+  <xsl:function name="thi:lang-prelude">
+  </xsl:function>
+
   <xsl:function name="thi:lang-symbolname">
     <xsl:param name="body" as="xs:string"/>
     <xsl:value-of select="$body"/>

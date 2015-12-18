@@ -19,6 +19,10 @@
   <xsl:variable name="defineSuffix" select="')'"/>
   <xsl:variable name="sep" select="'-'"/>
 
+  <xsl:function name="thi:lang-prelude">
+    <xsl:text>(def &lt;&lt; bit-shift-left)&#xA;&#xA;</xsl:text>
+  </xsl:function>
+
   <xsl:function name="thi:lang-symbolname">
     <xsl:param name="body" as="xs:string"/>
     <xsl:value-of select="replace(fn:lower-case($body),'_','-')"/>

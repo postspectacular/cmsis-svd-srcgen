@@ -61,6 +61,7 @@
   <xsl:template match="/device">
     <xsl:value-of select="thi:block-comment(concat(name, ' SVD peripherals &amp; registers'))"/>
     <xsl:text>&#xA;</xsl:text>
+    <xsl:value-of select="thi:lang-prelude()"/>
     <xsl:for-each select="peripherals/peripheral/name[(not($only) or fn:contains($only, text())) and (not($excl) or not(fn:contains($excl, text())))]/..">
       <xsl:variable name="derived" select="@derivedFrom"/>
       <xsl:choose>
