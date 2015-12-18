@@ -6,6 +6,13 @@
                 xmlns:fn="http://www.w3.org/2005/xpath-functions"
                 xmlns:xdt="http://www.w3.org/2005/xpath-datatypes"
                 xmlns:thi="http://thi.ng/">
+  <xsl:param name="only" as="xs:string" required="no">
+    <xsl:value-of select="''"/>
+  </xsl:param>
+  <xsl:param name="excl" as="xs:string" required="no">
+    <xsl:value-of select="''"/>
+  </xsl:param>
+
   <xsl:variable name="bitMasks" as="element()*">
     <Item>0x1</Item>
     <Item>0x3</Item>
@@ -54,7 +61,7 @@
   <xsl:template match="/device">
     <xsl:value-of select="thi:block-comment(concat(name, ' SVD peripherals &amp; registers'))"/>
     <xsl:text>&#xA;</xsl:text>
-    <xsl:for-each select="peripherals/peripheral">
+    <xsl:for-each select="peripherals/peripheral/name[(not($only) or fn:contains($only, text())) and (not($excl) or not(fn:contains($excl, text())))]/..">
       <xsl:variable name="derived" select="@derivedFrom"/>
       <xsl:choose>
         <xsl:when test="$derived">
