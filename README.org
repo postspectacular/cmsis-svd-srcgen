@@ -155,6 +155,13 @@ filtering options to reduce file size.
 ...
 #+END_SRC
 
+** Contributors
+
+| *Name*          | *Role*                          | *Website*                                 |
+|-----------------+---------------------------------+-------------------------------------------|
+| [[mailto:k@thi.ng][Karsten Schmidt]] | initiator & principal developer | http://postspectacular.com, http://thi.ng |
+
 ** License
 
-(c) 2015 Karsten Schmidt
+(c) 2015 Karsten Schmidt, this project is open source and licensed under the [[http://www.apache.org/licenses/LICENSE-2.0][Apache Software License 2.0]].
+
