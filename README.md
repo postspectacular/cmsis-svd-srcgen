@@ -3,9 +3,11 @@
 Convert ARM CMSIS SVD specs (processor peripherals, register &
 bitfields) into source code for different languages.
 
-Currently supported target languages are: Asm (GAS flavor), C and
+Currently supported target languages are: Asm (GCC flavor), C and
 Clojure. Other languages can be easily supported by defining a new
 XSLT stub file with language specific configuration/formatting.
+
+Project inspired by: [[https://github.com/posborne/cmsis-svd][posborne/cmsis-svd]]
 
 ** Usage
 
@@ -51,99 +53,107 @@ The overall generate symbol formats follow these patterns:
 #+BEGIN_SRC
 PERIPHERAL baseaddress
 PERIPHERAL_REGISTER baseaddress + registeroffset
+PERIPHERAL_REGISTER_FIELD xx (absolute bit mask, e.g. "0xf << 24")
 PERIPHERAL_REGISTER_FIELD_SHIFT xx (bit position)
-PERIPHERAL_REGISTER_FIELD_MASK xx (absolute bit mask, e.g. "0xf << 24")
-PERIPHERAL_REGISTER_FIELD_RMASK xx (raw unshifted bit mask, zero-based)
+PERIPHERAL_REGISTER_FIELD_MASK xx (raw unshifted bit mask, zero-based)
 #+END_SRC
 
 Because three different symbols are defined for each bitfield item,
-the generated files can become quite large (10k+ lines).
+the generated files can become quite large (10k+ lines). Use the
+filtering options to reduce file size.
 
 *** Example output
 **** Assembly
 
- #+BEGIN_SRC asm
- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- @
- @ STM32F401x SVD peripherals & registers
- @
+#+BEGIN_SRC asm
+/****************************************************************
+ * STM32F401x SVD peripherals & registers
+ ****************************************************************/
 
- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- @
- @ General-purpose I/Os (derived from GPIOH)
- @
+#ifndef _CMSIS_SVD_H
+#define _CMSIS_SVD_H
 
- .equ GPIOD 0x40020c00
- .equ GPIOD_MODER GPIOD + 0x0 @ GPIO port mode register
- .equ GPIOD_MODER_MODER15_SHIFT 30
- .equ GPIOD_MODER_MODER15_RMASK 0x3
- .equ GPIOD_MODER_MODER15_MASK 0x3 << 30
- .equ GPIOD_MODER_MODER14_SHIFT 28
- .equ GPIOD_MODER_MODER14_RMASK 0x3
- .equ GPIOD_MODER_MODER14_MASK 0x3 << 28
- .equ GPIOD_MODER_MODER13_SHIFT 26
- .equ GPIOD_MODER_MODER13_RMASK 0x3
- .equ GPIOD_MODER_MODER13_MASK 0x3 << 26
- .equ GPIOD_MODER_MODER12_SHIFT 24
- .equ GPIOD_MODER_MODER12_RMASK 0x3
- .equ GPIOD_MODER_MODER12_MASK 0x3 << 24
- .equ GPIOD_MODER_MODER11_SHIFT 22
- .equ GPIOD_MODER_MODER11_RMASK 0x3
- .equ GPIOD_MODER_MODER11_MASK 0x3 << 22
- .equ GPIOD_MODER_MODER10_SHIFT 20
- .equ GPIOD_MODER_MODER10_RMASK 0x3
- .equ GPIOD_MODER_MODER10_MASK 0x3 << 20
- .equ GPIOD_MODER_MODER9_SHIFT 18
- .equ GPIOD_MODER_MODER9_RMASK 0x3
- .equ GPIOD_MODER_MODER9_MASK 0x3 << 18
- .equ GPIOD_MODER_MODER8_SHIFT 16
- .equ GPIOD_MODER_MODER8_RMASK 0x3
- .equ GPIOD_MODER_MODER8_MASK 0x3 << 16
- .equ GPIOD_MODER_MODER7_SHIFT 14
- .equ GPIOD_MODER_MODER7_RMASK 0x3
+/****************************************************************
+ * General-purpose I/Os (derived from GPIOH)
+ ****************************************************************/
+.equ GPIOD, 0x40020c00
+.equ GPIOD_MODER, GPIOD + 0x0 // GPIO port mode register
+.equ GPIOD_MODER_RESET, 0x00000000
+.equ GPIOD_MODER_MODER15, 0x3 << 30
+.equ GPIOD_MODER_MODER15_SHIFT, 30
+.equ GPIOD_MODER_MODER15_MASK, 0x3
+.equ GPIOD_MODER_MODER14, 0x3 << 28
+.equ GPIOD_MODER_MODER14_SHIFT, 28
+.equ GPIOD_MODER_MODER14_MASK, 0x3
+.equ GPIOD_MODER_MODER13, 0x3 << 26
+.equ GPIOD_MODER_MODER13_SHIFT, 26
+.equ GPIOD_MODER_MODER13_MASK, 0x3
+.equ GPIOD_MODER_MODER12, 0x3 << 24
+.equ GPIOD_MODER_MODER12_SHIFT, 24
+.equ GPIOD_MODER_MODER12_MASK, 0x3
+.equ GPIOD_MODER_MODER11, 0x3 << 22
+.equ GPIOD_MODER_MODER11_SHIFT, 22
+.equ GPIOD_MODER_MODER11_MASK, 0x3
+.equ GPIOD_MODER_MODER10, 0x3 << 20
+.equ GPIOD_MODER_MODER10_SHIFT, 20
+.equ GPIOD_MODER_MODER10_MASK, 0x3
+.equ GPIOD_MODER_MODER9, 0x3 << 18
+.equ GPIOD_MODER_MODER9_SHIFT, 18
+.equ GPIOD_MODER_MODER9_MASK, 0x3
+.equ GPIOD_MODER_MODER8, 0x3 << 16
+.equ GPIOD_MODER_MODER8_SHIFT, 16
+.equ GPIOD_MODER_MODER8_MASK, 0x3
+.equ GPIOD_MODER_MODER7, 0x3 << 14
+.equ GPIOD_MODER_MODER7_SHIFT, 14
+.equ GPIOD_MODER_MODER7_MASK, 0x3
  ...
- #+END_SRC
+#+END_SRC
 
 **** C
 
- #+BEGIN_SRC c
- /****************************************************************
-  * STM32F40x SVD peripherals & registers
-  ****************************************************************/
+#+BEGIN_SRC c
+/****************************************************************
+ * STM32F401x SVD peripherals & registers
+ ****************************************************************/
 
- /****************************************************************
-  * General-purpose I/Os (derived from GPIOI)
-  ****************************************************************/
- #define GPIOD 0x40020c00
- #define GPIOD_MODER GPIOD + 0x0 // GPIO port mode register
- #define GPIOD_MODER_MODER15_SHIFT 30
- #define GPIOD_MODER_MODER15_RMASK 0x3
- #define GPIOD_MODER_MODER15_MASK 0x3 << 30
- #define GPIOD_MODER_MODER14_SHIFT 28
- #define GPIOD_MODER_MODER14_RMASK 0x3
- #define GPIOD_MODER_MODER14_MASK 0x3 << 28
- #define GPIOD_MODER_MODER13_SHIFT 26
- #define GPIOD_MODER_MODER13_RMASK 0x3
- #define GPIOD_MODER_MODER13_MASK 0x3 << 26
- #define GPIOD_MODER_MODER12_SHIFT 24
- #define GPIOD_MODER_MODER12_RMASK 0x3
- #define GPIOD_MODER_MODER12_MASK 0x3 << 24
- #define GPIOD_MODER_MODER11_SHIFT 22
- #define GPIOD_MODER_MODER11_RMASK 0x3
- #define GPIOD_MODER_MODER11_MASK 0x3 << 22
- #define GPIOD_MODER_MODER10_SHIFT 20
- #define GPIOD_MODER_MODER10_RMASK 0x3
- #define GPIOD_MODER_MODER10_MASK 0x3 << 20
- #define GPIOD_MODER_MODER9_SHIFT 18
- #define GPIOD_MODER_MODER9_RMASK 0x3
- #define GPIOD_MODER_MODER9_MASK 0x3 << 18
- #define GPIOD_MODER_MODER8_SHIFT 16
- #define GPIOD_MODER_MODER8_RMASK 0x3
- #define GPIOD_MODER_MODER8_MASK 0x3 << 16
- #define GPIOD_MODER_MODER7_SHIFT 14
- #define GPIOD_MODER_MODER7_RMASK 0x3
- ...
- #+END_SRC
+#ifndef _CMSIS_SVD_H
+#define _CMSIS_SVD_H
+
+/****************************************************************
+ * General-purpose I/Os (derived from GPIOH)
+ ****************************************************************/
+#define GPIOD (0x40020c00)
+#define GPIOD_MODER (GPIOD + 0x0) // GPIO port mode register
+#define GPIOD_MODER_RESET (0x00000000)
+#define GPIOD_MODER_MODER15 (0x3 << 30)
+#define GPIOD_MODER_MODER15_SHIFT (30)
+#define GPIOD_MODER_MODER15_MASK (0x3)
+#define GPIOD_MODER_MODER14 (0x3 << 28)
+#define GPIOD_MODER_MODER14_SHIFT (28)
+#define GPIOD_MODER_MODER14_MASK (0x3)
+#define GPIOD_MODER_MODER13 (0x3 << 26)
+#define GPIOD_MODER_MODER13_SHIFT (26)
+#define GPIOD_MODER_MODER13_MASK (0x3)
+#define GPIOD_MODER_MODER12 (0x3 << 24)
+#define GPIOD_MODER_MODER12_SHIFT (24)
+#define GPIOD_MODER_MODER12_MASK (0x3)
+#define GPIOD_MODER_MODER11 (0x3 << 22)
+#define GPIOD_MODER_MODER11_SHIFT (22)
+#define GPIOD_MODER_MODER11_MASK (0x3)
+#define GPIOD_MODER_MODER10 (0x3 << 20)
+#define GPIOD_MODER_MODER10_SHIFT (20)
+#define GPIOD_MODER_MODER10_MASK (0x3)
+#define GPIOD_MODER_MODER9 (0x3 << 18)
+#define GPIOD_MODER_MODER9_SHIFT (18)
+#define GPIOD_MODER_MODER9_MASK (0x3)
+#define GPIOD_MODER_MODER8 (0x3 << 16)
+#define GPIOD_MODER_MODER8_SHIFT (16)
+#define GPIOD_MODER_MODER8_MASK (0x3)
+#define GPIOD_MODER_MODER7 (0x3 << 14)
+#define GPIOD_MODER_MODER7_SHIFT (14)
+#define GPIOD_MODER_MODER7_MASK (0x3)
+...
+#+END_SRC
 
 ** License
 

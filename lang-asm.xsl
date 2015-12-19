@@ -7,19 +7,30 @@
                 xmlns:xdt="http://www.w3.org/2005/xpath-datatypes"
                 xmlns:thi="http://thi.ng/">
   <xsl:output method="text"/>
-  <xsl:variable name="lcommentPrefix" select="'@ '"/>
+  <xsl:variable name="lcommentPrefix" select="'// '"/>
   <xsl:variable name="lcommentSuffix" select="''"/>
   <xsl:variable
       name="bcommentPrefix"
-      select="'@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@&#xA;@&#xA;@ '"/>
+      select="'/****************************************************************&#xA; * '"/>
   <xsl:variable
       name="bcommentSuffix"
-      select="'@&#xA;'"/>
+      select="' ****************************************************************/'"/>
   <xsl:variable name="definePrefix" select="'.equ '"/>
   <xsl:variable name="defineSuffix" select="''"/>
   <xsl:variable name="sep" select="'_'"/>
 
-  <xsl:function name="thi:lang-prelude">
+  <xsl:function name="thi:lang-prologue">
+    <xsl:text>#ifndef _CMSIS_SVD_H&#xA;#define _CMSIS_SVD_H&#xA;&#xA;</xsl:text>
+  </xsl:function>
+
+  <xsl:function name="thi:lang-epilogue">
+    <xsl:text>#endif&#xA;</xsl:text>
+  </xsl:function>
+
+  <xsl:function name="thi:lang-def">
+    <xsl:param name="sym" as="xs:string"/>
+    <xsl:param name="val"/>
+    <xsl:value-of select="concat('.equ ',thi:lang-symbolname($sym),', ',$val)"/>
   </xsl:function>
 
   <xsl:function name="thi:lang-symbolname">

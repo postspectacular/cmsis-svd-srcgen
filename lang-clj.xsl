@@ -19,8 +19,17 @@
   <xsl:variable name="defineSuffix" select="')'"/>
   <xsl:variable name="sep" select="'-'"/>
 
-  <xsl:function name="thi:lang-prelude">
+  <xsl:function name="thi:lang-prologue">
     <xsl:text>(def &lt;&lt; bit-shift-left)&#xA;&#xA;</xsl:text>
+  </xsl:function>
+
+  <xsl:function name="thi:lang-epilogue">
+  </xsl:function>
+
+  <xsl:function name="thi:lang-def">
+    <xsl:param name="sym" as="xs:string"/>
+    <xsl:param name="val"/>
+    <xsl:value-of select="concat('(def ',thi:lang-symbolname($sym),' ',$val,')')"/>
   </xsl:function>
 
   <xsl:function name="thi:lang-symbolname">

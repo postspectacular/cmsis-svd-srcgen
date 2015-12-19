@@ -19,7 +19,18 @@
   <xsl:variable name="defineSuffix" select="''"/>
   <xsl:variable name="sep" select="'_'"/>
 
-  <xsl:function name="thi:lang-prelude">
+  <xsl:function name="thi:lang-prologue">
+    <xsl:text>#ifndef _CMSIS_SVD_H&#xA;#define _CMSIS_SVD_H&#xA;&#xA;</xsl:text>
+  </xsl:function>
+
+  <xsl:function name="thi:lang-epilogue">
+    <xsl:text>#endif&#xA;</xsl:text>
+  </xsl:function>
+
+  <xsl:function name="thi:lang-def">
+    <xsl:param name="sym" as="xs:string"/>
+    <xsl:param name="val"/>
+    <xsl:value-of select="concat('#define ',thi:lang-symbolname($sym),' (',$val,')')"/>
   </xsl:function>
 
   <xsl:function name="thi:lang-symbolname">
