@@ -11,7 +11,8 @@
   <xsl:variable name="lcommentSuffix" select="''"/>
   <xsl:variable
       name="bcommentPrefix"
-      select="'/****************************************************************&#xA; * '"/>
+      select="'/****************************************************************'"/>
+  <xsl:variable name="bcommentLPrefix" select="' * '"/>
   <xsl:variable
       name="bcommentSuffix"
       select="' ****************************************************************/'"/>
@@ -42,7 +43,7 @@
     <xsl:param name="op" as="xs:string"/>
     <xsl:param name="lhs"/>
     <xsl:param name="rhs"/>
-    <xsl:value-of select="concat($lhs,' ',$op,' ',$rhs)"/>
+    <xsl:value-of select="concat('(',$lhs,' ',$op,' ',$rhs,')')"/>
   </xsl:function>
 
   <xsl:include href="common.xsl"/>

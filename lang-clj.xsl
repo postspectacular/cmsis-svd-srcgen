@@ -11,7 +11,8 @@
   <xsl:variable name="lcommentSuffix" select="''"/>
   <xsl:variable
       name="bcommentPrefix"
-      select="';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;&#xA;;;&#xA;;; '"/>
+      select="';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;&#xA;;;'"/>
+  <xsl:variable name="bcommentLPrefix" select="';; '"/>
   <xsl:variable
       name="bcommentSuffix"
       select="';;&#xA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;'"/>
