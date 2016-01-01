@@ -7,6 +7,16 @@
                 xmlns:xdt="http://www.w3.org/2005/xpath-datatypes"
                 xmlns:thi="http://thi.ng/">
 
+  <!-- http://www.ibm.com/developerworks/xml/library/x-xsltip.html -->
+  <xsl:key name="access-lookup" match="thi:access" use="@exp"/>
+  <xsl:variable name="access-modes" select="document('')/*/thi:accessModes"/>
+
+  <thi:accessModes>
+    <thi:access abbr="R only" exp="read-only"/>
+    <thi:access abbr="W only" exp="write-only"/>
+    <thi:access abbr="R/W" exp="read-write"/>
+  </thi:accessModes>
+
   <xsl:param name="only" as="xs:string" required="no">
     <xsl:value-of select="''"/>
   </xsl:param>
@@ -17,6 +27,7 @@
 
   <xsl:variable name="NL" select="'&#xA;'"/>
 
+  <!-- http://stackoverflow.com/questions/3299938/creating-arrays-in-xslt -->
   <xsl:variable name="bitMasks" as="element()*">
     <Item>0x1</Item>
     <Item>0x3</Item>
@@ -64,8 +75,7 @@
 
   <xsl:template match="/device">
     <xsl:variable name="header">
-      <xsl:value-of select="name"/>
-      <xsl:text> SVD peripherals &amp; registers&#xA;generated @ </xsl:text>
+      <xsl:value-of select="concat(name,' v',version,' SVD peripherals &amp; registers&#xA;generated @ ')"/>
       <xsl:value-of select="format-dateTime(current-dateTime(), '[Y0001]-[M01]-[D01] [H01]:[m01]:[s01]', 'en', (), ())"/>
       <xsl:text>&#xA;&#xA;DO NOT EDIT! This file was auto-generated with:</xsl:text>
       <xsl:text>&#xA;http://github.com/postspectacular/cmsis-svd-srcgen</xsl:text>
@@ -86,6 +96,12 @@
         </xsl:otherwise>
       </xsl:choose>
       <xsl:text>&#xA;</xsl:text>
+    </xsl:for-each>
+    <!-- Interrupts -->
+    <xsl:value-of select="thi:block-comment('Interrupt handlers')"/>
+    <xsl:for-each select="peripherals/peripheral/interrupt">
+      <xsl:sort select="value" data-type="number"/>
+      <xsl:call-template name="irq"/>
     </xsl:for-each>
     <xsl:value-of select="thi:lang-epilogue()"/>
   </xsl:template>
@@ -126,8 +142,13 @@
     <xsl:param name="device"/>
     <xsl:variable name="reg" select="concat($device,$sep,name)"/>
     <xsl:variable name="offset" select="fn:lower-case(addressOffset)"/>
+    <xsl:variable name="access">
+      <xsl:apply-templates select="$access-modes">
+        <xsl:with-param name="mode" select="access"/>
+      </xsl:apply-templates>
+    </xsl:variable>
     <xsl:value-of select="thi:lang-def($reg,thi:lang-expr('+',$device,$offset))"/>
-    <xsl:value-of select="thi:line-comment(description)"/>
+    <xsl:value-of select="thi:line-comment(concat(description, ' (',$access,')'))"/>
     <xsl:value-of select="concat(thi:lang-def(concat($reg,$sep,'OFFSET'),$offset),$NL)"/>
     <xsl:choose>
       <xsl:when test="resetValue">
@@ -155,6 +176,16 @@
       <xsl:value-of
           select="concat(thi:lang-def(concat($fname,$sep,'SHIFT'),$boff),$NL)"/>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template name="irq">
+    <xsl:value-of select="thi:lang-def(concat('IRQ_',name),value)"/>
+    <xsl:value-of select="thi:line-comment(description)"/>
+  </xsl:template>
+
+  <xsl:template match="thi:accessModes">
+    <xsl:param name="mode"/>
+    <xsl:value-of select="key('access-lookup', $mode)/@abbr"/>
   </xsl:template>
 
 </xsl:stylesheet>
